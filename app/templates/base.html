@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Table to ppt!</h1>
+        <nav>
+            <ul>
+                Convert the .tsv files from Zephyr quiz league to .ppt for replaying the quiz with your friends
+            </ul>
+        </nav>
+    </header>
+    <main>
+        This is more description of what type of file should you upload and what type of file can you then download
+
+        <form id="upload-form" enctype="multipart/form-data" method="post">
+          <input type="file" name="file">
+          <button type="submit" class="button">Upload</button>
+        </form>
+        <p id="success-message" class="success" style="display: none;">Success!</p>
+        <button type="button" class="button">Make PPT!</button>
+        <a id="download-link" href="#" download style="display: none;">Download</a>
+      </div>
+    </div>
+    <script>
+      var form = document.getElementById('upload-form');
+      var message = document.getElementById('success-message');
+      var downloadLink = document.getElementById('download-link');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{{ url_for('upload') }}', true);
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            message.style.display = 'block';
+            downloadLink.style.display = 'block';
+            downloadLink.href = '{{ url_for('download', filename= '') }}' + xhr.responseText;
+            console.log(xhr.responseText);
+          } else {
+            alert('Upload failed: ' + xhr.statusText);
+          }
+        };
+        xhr.send(formData);
+      });
+    </script>
+    </main>
+    <footer>
+        &copy; Passion Projects 2023
+    </footer>
+</body>
+</html>
